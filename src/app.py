@@ -10,6 +10,7 @@ from dash import callback, dcc, html
 
 # For loading the image
 import base64
+import os
 
 # # For plotting risk indicator and for creating waterfall plot
 # import plotly.graph_objs as go
@@ -29,10 +30,10 @@ import base64
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
-
-red_png = 'red.jpg'
+cwd = os.getcwd()
+red_png = os.path.join(cwd, 'assets', 'image', 'red.png')
 red_base64 = base64.b64encode(open(red_png, 'rb').read()).decode('ascii')
-blue_png = 'blue.jpg'
+blue_png = os.path.join(cwd, 'assets', 'image', 'blue.png')
 blue_base64 = base64.b64encode(open(blue_png, 'rb').read()).decode('ascii')
 
 # Layout

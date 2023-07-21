@@ -290,12 +290,12 @@ app.layout = html.Div([
             dbc.Row([html.Div("Factors contributing to predicted likelihood of frequent hospital admissions",
                               style={'font-weight': 'bold', 'font-size': 16, 'padding': '10px 25px'})]),
             dbc.Row([
-                dbc.Col([
-                    html.Div([
-                        html.Img(src='data:image/png;base64,{}'.format(red_base64)),
-                    ]), ],
-                    className="g-0",
-                    width={"size": 1}),
+                # dbc.Col([
+                #     html.Div([
+                #         html.Img(src='data:image/png;base64,{}'.format(red_base64)),
+                #     ]), ],
+                #     className="g-0",
+                #     width={"size": 1}),
                 dbc.Col([
                     html.Div(["high risk: increase in frequent hospital admissions likelihood."],
                              style={'font-size': 16})

@@ -8,9 +8,9 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from dash import callback, dcc, html
 
-# For loading the image
-import base64
-import os
+# # For loading the image
+# import base64
+# import os
 
 # # For plotting risk indicator and for creating waterfall plot
 # import plotly.graph_objs as go
@@ -30,12 +30,12 @@ import os
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
-# cwd = os.path.abspath(os.path.join(os.getcwd(), ".."))
-cwd = os.getcwd()
-red_png = os.path.join(cwd, 'assets', 'image', 'red.jpg')
-red_base64 = base64.b64encode(open(red_png, 'rb').read()).decode('ascii')
-blue_png = os.path.join(cwd, 'assets', 'image', 'blue.jpg')
-blue_base64 = base64.b64encode(open(blue_png, 'rb').read()).decode('ascii')
+# # cwd = os.path.abspath(os.path.join(os.getcwd(), ".."))
+# cwd = os.getcwd()
+# red_png = os.path.join(cwd, 'assets', 'image', 'red.jpg')
+# red_base64 = base64.b64encode(open(red_png, 'rb').read()).decode('ascii')
+# blue_png = os.path.join(cwd, 'assets', 'image', 'blue.jpg')
+# blue_base64 = base64.b64encode(open(blue_png, 'rb').read()).decode('ascii')
 
 # Layout
 app.layout = html.Div([
@@ -302,12 +302,12 @@ app.layout = html.Div([
                 ]),
             ]),
             dbc.Row([
-                dbc.Col([
-                    html.Div([
-                        html.Img(src='data:image/png;base64,{}'.format(blue_base64)),
-                    ]), ],
-                    className="g-0",
-                    width={"size": 1}),
+                # dbc.Col([
+                #     html.Div([
+                #         html.Img(src='data:image/png;base64,{}'.format(blue_base64)),
+                #     ]), ],
+                #     className="g-0",
+                #     width={"size": 1}),
                 dbc.Col([
                     html.Div(["low risk: decrease in frequent hospital admissions likelihood."],
                              style={'font-size': 16})

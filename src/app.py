@@ -31,9 +31,9 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
 cwd = os.getcwd()
-red_png = os.path.join(cwd, 'assets', 'image', 'red.png')
+red_png = os.path.join(cwd, 'assets', 'image', 'red.jpg')
 red_base64 = base64.b64encode(open(red_png, 'rb').read()).decode('ascii')
-blue_png = os.path.join(cwd, 'assets', 'image', 'blue.png')
+blue_png = os.path.join(cwd, 'assets', 'image', 'blue.jpg')
 blue_base64 = base64.b64encode(open(blue_png, 'rb').read()).decode('ascii')
 
 # Layout

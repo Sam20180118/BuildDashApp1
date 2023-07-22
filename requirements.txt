@@ -1,6 +1,8 @@
 dash==2.11.1
 dash_bootstrap_components==1.4.2
-numpy==1.24.4
+numpy==1.21.0
 pandas==2.0.3
 gunicorn
 dash-tools
+pycaret==3.0.4
+shap==0.41.0

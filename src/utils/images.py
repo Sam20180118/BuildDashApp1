@@ -15,10 +15,10 @@ import os
 # logo_encoded = 'data:image/png;base64,{}'.format(logo_tunel.decode())
 
 cwd = os.getcwd()
-red_png = os.path.join(cwd, 'assets', 'image', 'red.jpg')
+red_png = os.path.join(cwd, 'assets', 'image', 'red.JPG')
 red_base64 = base64.b64encode(open(red_png, 'rb').read()).decode('ascii')
 red_base64_encoded = 'data:image/png;base64,{}'.format(red_base64)
 
-blue_png = os.path.join(cwd, 'assets', 'image', 'blue.jpg')
+blue_png = os.path.join(cwd, 'assets', 'image', 'blue.JPG')
 blue_base64 = base64.b64encode(open(blue_png, 'rb').read()).decode('ascii')
 blue_base64_encoded = 'data:image/png;base64,{}'.format(blue_base64)

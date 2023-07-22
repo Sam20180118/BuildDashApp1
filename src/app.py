@@ -18,9 +18,9 @@ import os
 # import plotly.graph_objs as go
 # import shap
 
-# # # To import pkl file model objects
-# import pickle
-# pickled_model = pickle.load(open('frequent_flyer_predition_model_Jul2023.pkl', 'rb'))
+# # To import pkl file model objects
+import pickle
+pickled_model = pickle.load(open('frequent_flyer_predition_model_Jul2023_forRender.pkl', 'rb'))
 #
 # # normally we would want the pipeline object as well, but in this example transformation is minimal so we will just
 # # construct the require format on the fly from data entry. Also means we don't need to rely on PyCaret here

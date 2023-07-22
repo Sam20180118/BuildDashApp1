@@ -10,13 +10,9 @@ from dash import callback, dcc, html
 
 from utils.images import red_base64_encoded, blue_base64_encoded
 
-# For loading the image
-import base64
-import os
-
-# # For plotting risk indicator and for creating waterfall plot
-# import plotly.graph_objs as go
-# import shap
+# For plotting risk indicator and for creating waterfall plot
+import plotly.graph_objs as go
+import shap
 
 # # To import pkl file model objects
 import pickle
@@ -25,8 +21,8 @@ pickled_model = pickle.load(open('frequent_flyer_predition_model_Jul2023_forRend
 # # normally we would want the pipeline object as well, but in this example transformation is minimal so we will just
 # # construct the require format on the fly from data entry. Also means we don't need to rely on PyCaret here
 # # object has 2 slots, first is data pipeline, second is the model object
-# hdpred_model = pickled_model
-# hd_pipeline = []
+hdpred_model = pickled_model
+hd_pipeline = []
 
 # Start Dashboard
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -265,13 +261,13 @@ app.layout = html.Div([
                                      html.Div("Predicted risk",
                                               style={'font-weight': 'bold', 'font-size': 24}),
                                  ]),
-                                 # dbc.Row([
-                                 #     html.Div(id='main_text',
-                                 #              style={'font-size': 72,
-                                 #                     'font-weight': 'bold',
-                                 #                     "color": "red",
-                                 #                     }),
-                                 # ])
+                                 dbc.Row([
+                                     html.Div(id='main_text',
+                                              style={'font-size': 72,
+                                                     'font-weight': 'bold',
+                                                     "color": "red",
+                                                     }),
+                                 ])
                              ]),
                          ], style={"width": "18rem"},
                              className="g-0 d-flex align-items-center")
@@ -309,16 +305,16 @@ app.layout = html.Div([
                 ]),
             ]),
 
-            # dbc.Row(dcc.Graph(
-            #     id='Metric_2',
-            #     config={'displayModeBar': False}
-            # ), style={'marginLeft': 15}),
-            # dbc.Row([html.Div(id='action_header',
-            #                   style={'font-weight': 'bold', 'font-size': 16, 'padding': '10px 25px'})]),
-            # dbc.Row(
-            #     dbc.Col([html.Div(id='recommended_action')], width={"size": 11},
-            #             style={'font-size': 16, 'padding': '10px 25px',
-            #                    'backgroundColor': '#E2E2E2', 'marginLeft': 25})),
+            dbc.Row(dcc.Graph(
+                id='Metric_2',
+                config={'displayModeBar': False}
+            ), style={'marginLeft': 15}),
+            dbc.Row([html.Div(id='action_header',
+                              style={'font-weight': 'bold', 'font-size': 16, 'padding': '10px 25px'})]),
+            dbc.Row(
+                dbc.Col([html.Div(id='recommended_action')], width={"size": 11},
+                        style={'font-size': 16, 'padding': '10px 25px',
+                               'backgroundColor': '#E2E2E2', 'marginLeft': 25})),
         ],
             style={'padding': '10px 25px'}
         ),
@@ -375,173 +371,174 @@ def generate_feature_matrix(age, sex, COPD, Heart_Disease, Stroke, Walking_Aid,
     return x_patient.to_json()
 
 
-# @app.callback(
-# # @callback(
-#     [
-#         # Output('Metric_1', 'figure'),
-#         Output('main_text', 'children'),
-#         Output('action_header', 'children'),
-#         Output('recommended_action', 'children'),
-#         Output('Metric_2', 'figure')],
-#     [Input('data_patient', 'children')]
-# )
-# def predict_hd_summary(data_patient):
-#     # read in data and predict likelihood of heart disease
-#     x_new = pd.read_json(data_patient)
-#     y_val = hdpred_model.predict_proba(x_new)[:, 1] * 100
-#     text_val = str(np.round(y_val[0], 1)) + "%"
-#
-#     # assign a risk group
-#     if y_val / 100 <= 0.03:
-#         risk_grp = '"Lower than Q2"'
-#     elif y_val / 100 <= 0.17:
-#         risk_grp = '"Between Q2 & Q3"'
-#     else:
-#         risk_grp = '"Higher than Q3"'
-#
-#     # assign an action related to the risk group
-#     rg_actions = {'"Lower than Q2"': ['Discuss with patient any single large risk factors they may have, and otherwise '
-#                                       'continue supporting healthy lifestyle habits. Follow-up in 12 months'],
-#                   '"Between Q2 & Q3"': ['Discuss lifestyle with patient and identify changes to reduce risk. '
-#                                         'Schedule follow-up with patient in 3 months on how changes are progressing. '
-#                                         'Recommend performing simple tests to assess positive impact of changes.'],
-#                   '"Higher than Q3"': ['Immediate follow-up with patient to discuss next steps including additional '
-#                                        'follow-up tests, lifestyle changes and medications.']}
-#
-#     next_action = rg_actions[risk_grp][0]
-#
-#     # do shap value calculations for basic waterfall plot
-#     # explainer_patient = shap.Explainer(hdpred_model.predict, x_new)
-#     # shap_values_patient = explainer_patient.shap_values(x_new)
-#     explainer_patient = shap.TreeExplainer(hdpred_model.named_steps.actual_estimator)
-#     # shap_values_patient = explainer_patient.shap_values(hdpred_model[:-1].transform(x_new))
-#     shap_values_patient = explainer_patient.shap_values(x_new)
-#
-#     # updated_fnames = hdpred_model[:-1].transform(x_new).T.reset_index()
-#     updated_fnames = x_new.T.reset_index()
-#     updated_fnames.columns = ['feature', 'value']
-#     updated_fnames['shap_original'] = pd.Series(shap_values_patient[1].flatten())
-#     updated_fnames['shap_abs'] = updated_fnames['shap_original'].abs()
-#     updated_fnames = updated_fnames.sort_values(by=['shap_abs'], ascending=True)
-#
-#     # need to collapse those after first 9, so plot always shows 10 bars
-#     show_features = 9
-#     num_other_features = updated_fnames.shape[0] - show_features
-#     col_other_name = f"{num_other_features} other features"
-#     f_group = pd.DataFrame(updated_fnames.head(num_other_features).sum()).T
-#     f_group['feature'] = col_other_name
-#     plot_data = pd.concat([f_group, updated_fnames.tail(show_features)])
-#
-#     # additional things for plotting
-#     plot_range = plot_data['shap_original'].cumsum().max() - plot_data['shap_original'].cumsum().min()
-#     plot_data['text_pos'] = np.where(plot_data['shap_original'].abs() > (1 / 9) * plot_range, "inside", "outside")
-#     plot_data['text_col'] = "white"
-#     plot_data.loc[(plot_data['text_pos'] == "outside") & (plot_data['shap_original'] < 0), 'text_col'] = "#3283FE"
-#     plot_data.loc[(plot_data['text_pos'] == "outside") & (plot_data['shap_original'] > 0), 'text_col'] = "#F6222E"
-#     plot_data['shap_original'] = [round(float(x), 4) for x in plot_data['shap_original']]
-#
-#     fig2 = go.Figure(go.Waterfall(
-#         name="",
-#         orientation="h",
-#         measure=['absolute'] + ['relative'] * show_features,
-#         base=explainer_patient.expected_value[1],
-#         textposition=plot_data['text_pos'],
-#         text=plot_data['shap_original'],
-#         textfont={"color": plot_data['text_col']},
-#         texttemplate='%{text:+.2f}',
-#         y=plot_data['feature'],
-#         x=plot_data['shap_original'],
-#         connector={"mode": "spanning", "line": {"width": 1, "color": "rgb(102, 102, 102)", "dash": "dot"}},
-#         decreasing={"marker": {"color": "#3283FE"}},
-#         increasing={"marker": {"color": "#F6222E"}},
-#         hoverinfo="skip"
-#     ))
-#
-#     fig2 = go.Figure(go.Waterfall(
-#         name="",
-#         orientation="h",
-#         measure=['absolute'] + ['relative'] * show_features,
-#         base=explainer_patient.expected_value[1],
-#         textposition=plot_data['text_pos'],
-#         text=plot_data['shap_original'].round(4),
-#         textfont={"color": plot_data['text_col']},
-#         texttemplate='%{text:+.2f}',
-#         y=plot_data['feature'],
-#         x=plot_data['shap_original'],
-#         connector={"mode": "spanning", "line": {"width": 1, "color": "rgb(102, 102, 102)", "dash": "dot"}},
-#         decreasing={"marker": {"color": "#3283FE"}},
-#         increasing={"marker": {"color": "#F6222E"}},
-#         hoverinfo="skip"
-#     ))
-#     fig2.update_layout(
-#         waterfallgap=0.2,
-#         # showlegend = True,
-#         autosize=False,
-#         width=800,
-#         height=400,
-#         paper_bgcolor='rgba(0,0,0,0)',
-#         plot_bgcolor='rgba(0,0,0,0)',
-#         yaxis=dict(
-#             showgrid=True,
-#             zeroline=True,
-#             showline=True,
-#             gridcolor='lightgray'
-#         ),
-#         xaxis=dict(
-#             showgrid=False,
-#             zeroline=False,
-#             showline=True,
-#             showticklabels=True,
-#             linecolor='black',
-#             tickcolor='black',
-#             ticks='outside',
-#             ticklen=5
-#         ),
-#         margin={'t': 25, 'b': 50},
-#         shapes=[
-#             dict(
-#                 type='line',
-#                 yref='paper', y0=0, y1=1.02,
-#                 # xref='x', x0=plot_data['shap_original'].sum()+explainer_patient.expected_value,
-#                 # x1=plot_data['shap_original'].sum()+explainer_patient.expected_value,
-#                 xref='x', x0=plot_data['shap_original'].sum() + explainer_patient.expected_value[1],
-#                 x1=plot_data['shap_original'].sum() + explainer_patient.expected_value[1],
-#                 layer="below",
-#                 line=dict(
-#                     color="black",
-#                     width=1,
-#                     dash="dot")
-#             )
-#         ]
-#     )
-#     fig2.update_yaxes(automargin=True)
-#     fig2.add_annotation(
-#         yref='paper',
-#         xref='x',
-#         # x=explainer_patient.expected_value,
-#         x=explainer_patient.expected_value[1],
-#         y=-0.12,
-#         # text="E[f(x)] = {:.2f}".format(explainer_patient.expected_value),
-#         text="E[f(x)] = {:.2f}".format(explainer_patient.expected_value[1]),
-#         showarrow=False,
-#         font=dict(color="black", size=14)
-#     )
-#     fig2.add_annotation(
-#         yref='paper',
-#         xref='x',
-#         # x=plot_data['shap_original'].sum()+explainer_patient.expected_value,
-#         x=plot_data['shap_original'].sum() + explainer_patient.expected_value[1],
-#         y=1.075,
-#         # text="f(x) = {:.2f}".format(plot_data['shap_original'].sum()+explainer_patient.expected_value),
-#         text="f(x) = {:.2f}".format(plot_data['shap_original'].sum() + explainer_patient.expected_value[1]),
-#         showarrow=False,
-#         font=dict(color="black", size=14)
-#     )
-#
-#     return text_val, \
-#            f"Recommended action(s) for a patient in the {risk_grp} group", \
-#            next_action, \
-#            fig2
+@app.callback(
+# @callback(
+    [
+        # Output('Metric_1', 'figure'),
+        Output('main_text', 'children'),
+        Output('action_header', 'children'),
+        Output('recommended_action', 'children'),
+        Output('Metric_2', 'figure')],
+    [Input('data_patient', 'children')]
+)
+def predict_hd_summary(data_patient):
+    # read in data and predict likelihood of heart disease
+    x_new = pd.read_json(data_patient)
+    y_val = hdpred_model.predict_proba(x_new)[:, 1] * 100
+    text_val = str(np.round(y_val[0], 1)) + "%"
+
+    # assign a risk group
+    if y_val / 100 <= 0.03:
+        risk_grp = '"Lower than Q2"'
+    elif y_val / 100 <= 0.17:
+        risk_grp = '"Between Q2 & Q3"'
+    else:
+        risk_grp = '"Higher than Q3"'
+
+    # assign an action related to the risk group
+    rg_actions = {'"Lower than Q2"': ['Discuss with patient any single large risk factors they may have, and otherwise '
+                                      'continue supporting healthy lifestyle habits. Follow-up in 12 months'],
+                  '"Between Q2 & Q3"': ['Discuss lifestyle with patient and identify changes to reduce risk. '
+                                        'Schedule follow-up with patient in 3 months on how changes are progressing. '
+                                        'Recommend performing simple tests to assess positive impact of changes.'],
+                  '"Higher than Q3"': ['Immediate follow-up with patient to discuss next steps including additional '
+                                       'follow-up tests, lifestyle changes and medications.']}
+
+    next_action = rg_actions[risk_grp][0]
+
+    # do shap value calculations for basic waterfall plot
+    # explainer_patient = shap.Explainer(hdpred_model.predict, x_new)
+    # shap_values_patient = explainer_patient.shap_values(x_new)
+    # explainer_patient = shap.TreeExplainer(hdpred_model.named_steps.actual_estimator)
+    explainer_patient = shap.TreeExplainer(hdpred_model)
+    # shap_values_patient = explainer_patient.shap_values(hdpred_model[:-1].transform(x_new))
+    shap_values_patient = explainer_patient.shap_values(x_new)
+
+    # updated_fnames = hdpred_model[:-1].transform(x_new).T.reset_index()
+    updated_fnames = x_new.T.reset_index()
+    updated_fnames.columns = ['feature', 'value']
+    updated_fnames['shap_original'] = pd.Series(shap_values_patient[1].flatten())
+    updated_fnames['shap_abs'] = updated_fnames['shap_original'].abs()
+    updated_fnames = updated_fnames.sort_values(by=['shap_abs'], ascending=True)
+
+    # need to collapse those after first 9, so plot always shows 10 bars
+    show_features = 9
+    num_other_features = updated_fnames.shape[0] - show_features
+    col_other_name = f"{num_other_features} other features"
+    f_group = pd.DataFrame(updated_fnames.head(num_other_features).sum()).T
+    f_group['feature'] = col_other_name
+    plot_data = pd.concat([f_group, updated_fnames.tail(show_features)])
+
+    # additional things for plotting
+    plot_range = plot_data['shap_original'].cumsum().max() - plot_data['shap_original'].cumsum().min()
+    plot_data['text_pos'] = np.where(plot_data['shap_original'].abs() > (1 / 9) * plot_range, "inside", "outside")
+    plot_data['text_col'] = "white"
+    plot_data.loc[(plot_data['text_pos'] == "outside") & (plot_data['shap_original'] < 0), 'text_col'] = "#3283FE"
+    plot_data.loc[(plot_data['text_pos'] == "outside") & (plot_data['shap_original'] > 0), 'text_col'] = "#F6222E"
+    plot_data['shap_original'] = [round(float(x), 4) for x in plot_data['shap_original']]
+
+    fig2 = go.Figure(go.Waterfall(
+        name="",
+        orientation="h",
+        measure=['absolute'] + ['relative'] * show_features,
+        base=explainer_patient.expected_value[1],
+        textposition=plot_data['text_pos'],
+        text=plot_data['shap_original'],
+        textfont={"color": plot_data['text_col']},
+        texttemplate='%{text:+.2f}',
+        y=plot_data['feature'],
+        x=plot_data['shap_original'],
+        connector={"mode": "spanning", "line": {"width": 1, "color": "rgb(102, 102, 102)", "dash": "dot"}},
+        decreasing={"marker": {"color": "#3283FE"}},
+        increasing={"marker": {"color": "#F6222E"}},
+        hoverinfo="skip"
+    ))
+
+    fig2 = go.Figure(go.Waterfall(
+        name="",
+        orientation="h",
+        measure=['absolute'] + ['relative'] * show_features,
+        base=explainer_patient.expected_value[1],
+        textposition=plot_data['text_pos'],
+        text=plot_data['shap_original'].round(4),
+        textfont={"color": plot_data['text_col']},
+        texttemplate='%{text:+.2f}',
+        y=plot_data['feature'],
+        x=plot_data['shap_original'],
+        connector={"mode": "spanning", "line": {"width": 1, "color": "rgb(102, 102, 102)", "dash": "dot"}},
+        decreasing={"marker": {"color": "#3283FE"}},
+        increasing={"marker": {"color": "#F6222E"}},
+        hoverinfo="skip"
+    ))
+    fig2.update_layout(
+        waterfallgap=0.2,
+        # showlegend = True,
+        autosize=False,
+        width=800,
+        height=400,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        yaxis=dict(
+            showgrid=True,
+            zeroline=True,
+            showline=True,
+            gridcolor='lightgray'
+        ),
+        xaxis=dict(
+            showgrid=False,
+            zeroline=False,
+            showline=True,
+            showticklabels=True,
+            linecolor='black',
+            tickcolor='black',
+            ticks='outside',
+            ticklen=5
+        ),
+        margin={'t': 25, 'b': 50},
+        shapes=[
+            dict(
+                type='line',
+                yref='paper', y0=0, y1=1.02,
+                # xref='x', x0=plot_data['shap_original'].sum()+explainer_patient.expected_value,
+                # x1=plot_data['shap_original'].sum()+explainer_patient.expected_value,
+                xref='x', x0=plot_data['shap_original'].sum() + explainer_patient.expected_value[1],
+                x1=plot_data['shap_original'].sum() + explainer_patient.expected_value[1],
+                layer="below",
+                line=dict(
+                    color="black",
+                    width=1,
+                    dash="dot")
+            )
+        ]
+    )
+    fig2.update_yaxes(automargin=True)
+    fig2.add_annotation(
+        yref='paper',
+        xref='x',
+        # x=explainer_patient.expected_value,
+        x=explainer_patient.expected_value[1],
+        y=-0.12,
+        # text="E[f(x)] = {:.2f}".format(explainer_patient.expected_value),
+        text="E[f(x)] = {:.2f}".format(explainer_patient.expected_value[1]),
+        showarrow=False,
+        font=dict(color="black", size=14)
+    )
+    fig2.add_annotation(
+        yref='paper',
+        xref='x',
+        # x=plot_data['shap_original'].sum()+explainer_patient.expected_value,
+        x=plot_data['shap_original'].sum() + explainer_patient.expected_value[1],
+        y=1.075,
+        # text="f(x) = {:.2f}".format(plot_data['shap_original'].sum()+explainer_patient.expected_value),
+        text="f(x) = {:.2f}".format(plot_data['shap_original'].sum() + explainer_patient.expected_value[1]),
+        showarrow=False,
+        font=dict(color="black", size=14)
+    )
+
+    return text_val, \
+           f"Recommended action(s) for a patient in the {risk_grp} group", \
+           next_action, \
+           fig2
 
 if __name__ == '__main__':
     app.run(debug=True)

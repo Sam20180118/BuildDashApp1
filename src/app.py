@@ -8,9 +8,11 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from dash import callback, dcc, html
 
-# # For loading the image
-# import base64
-# import os
+from utils.images import red_base64_encoded, blue_base64_encoded
+
+# For loading the image
+import base64
+import os
 
 # # For plotting risk indicator and for creating waterfall plot
 # import plotly.graph_objs as go
@@ -29,13 +31,6 @@ from dash import callback, dcc, html
 # Start Dashboard
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
-
-# # cwd = os.path.abspath(os.path.join(os.getcwd(), ".."))
-# cwd = os.getcwd()
-# red_png = os.path.join(cwd, 'assets', 'image', 'red.jpg')
-# red_base64 = base64.b64encode(open(red_png, 'rb').read()).decode('ascii')
-# blue_png = os.path.join(cwd, 'assets', 'image', 'blue.jpg')
-# blue_base64 = base64.b64encode(open(blue_png, 'rb').read()).decode('ascii')
 
 # Layout
 app.layout = html.Div([
@@ -290,24 +285,24 @@ app.layout = html.Div([
             dbc.Row([html.Div("Factors contributing to predicted likelihood of frequent hospital admissions",
                               style={'font-weight': 'bold', 'font-size': 16, 'padding': '10px 25px'})]),
             dbc.Row([
-                # dbc.Col([
-                #     html.Div([
-                #         html.Img(src='data:image/png;base64,{}'.format(red_base64)),
-                #     ]), ],
-                #     className="g-0",
-                #     width={"size": 1}),
+                dbc.Col([
+                    html.Div([
+                        html.Img(src=red_base64_encoded),
+                    ]), ],
+                    className="g-0",
+                    width={"size": 1}),
                 dbc.Col([
                     html.Div(["high risk: increase in frequent hospital admissions likelihood."],
                              style={'font-size': 16})
                 ]),
             ]),
             dbc.Row([
-                # dbc.Col([
-                #     html.Div([
-                #         html.Img(src='data:image/png;base64,{}'.format(blue_base64)),
-                #     ]), ],
-                #     className="g-0",
-                #     width={"size": 1}),
+                dbc.Col([
+                    html.Div([
+                        html.Img(src=blue_base64_encoded),
+                    ]), ],
+                    className="g-0",
+                    width={"size": 1}),
                 dbc.Col([
                     html.Div(["low risk: decrease in frequent hospital admissions likelihood."],
                              style={'font-size': 16})

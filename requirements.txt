@@ -4,5 +4,5 @@ numpy==1.24.4
 pandas==2.0.3
 gunicorn
 dash-tools
-pickle
+scikit-learn==1.2.2
 shap==0.41.0

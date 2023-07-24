@@ -25,251 +25,299 @@ hdpred_model = pickled_model
 hd_pipeline = []
 
 # Start Dashboard
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],
+                meta_tags=[{'name': 'viewport',
+                            'content': 'width=device-width, initial-scale=0.65, maximum-scale=0.65, minimum=scale=0.65,'}],
+                )
 server = app.server
 
 # Layout
 app.layout = html.Div([
 # layout = html.Div([
-    html.Div([html.H2('Frequent Flyer Risk Prediction Tool',
+    html.Div([html.H2('Individual Risk Interpreter',
                       style={'marginLeft': 20, 'color': 'white'})],
              style={'borderBottom': 'thin black solid',
                     'backgroundColor': '#24a0ed',
-                    'padding': '10px 5px'}),
+                    'padding': '2px 5px'}),
     dbc.Row([
         dbc.Col([html.Div("Personal health information",
-                          style={'font-weight': 'bold', 'font-size': 20}),
-                 dbc.Row([html.Div("Individual demographics",
-                                   style={'font-weight': 'bold', 'font-size': 16, 'padding': '10px 25px'})]),
+                          style={'font-weight': 'bold', 'font-size': 16}),
+                 # dbc.Row([html.Div("Individual demographics",
+                 #                   style={'font-weight': 'bold', 'font-size': 14, 'padding': '10px 25px'})]),
                  dbc.Row([
                      dbc.Col(html.Div([
-                         html.Label('Age (years): '),
+                         html.Label('年齡: '),
                          dcc.Input(
                              type="number",
                              debounce=True,
                              value=65,
-                             id='age'
+                             id='age',
+                             size = '8'
                          )
                      ]), width={"size": 3}),
                      dbc.Col(html.Div([
-                         html.Label('Sex: '),
+                         html.Label('性別: '),
                          dcc.Dropdown(
                              options=[
-                                 {'label': 'Female', 'value': 0},
-                                 {'label': 'Male', 'value': 1}
+                                 {'label': '女', 'value': 0},
+                                 {'label': '男', 'value': 1}
                              ],
                              value=0,
                              id='sex'
                          )
                      ]), width={"size": 3}),
-                 ], style={'padding': '10px 25px'}),
-                 dbc.Row([html.Div("IADL functions",
-                                   style={'font-weight': 'bold', 'font-size': 16, 'padding': '10px 25px'})]),
-                 dbc.Row([
                      dbc.Col(html.Div([
-                         html.Label('Uses public transportation as usual: '),
+                         html.Label('步行輔助器: '),
                          dcc.Dropdown(
                              options=[
-                                 {'label': 'Dependent', 'value': 0},
-                                 {'label': 'Partly Dependent', 'value': 1},
-                                 {'label': 'Independent', 'value': 2}
-                             ],
-                             value=2,
-                             id='Use_Transp'
-                         )
-                     ]), width={"size": 3}, style={'padding': '10px 10px'}),
-                     dbc.Col(html.Div([
-                         html.Label('Shopping for items required for daily life: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'Dependent', 'value': 0},
-                                 {'label': 'Partly Dependent', 'value': 1},
-                                 {'label': 'Independent', 'value': 2}
-                             ],
-                             value=2,
-                             id='Shopping'
-                         )
-                     ]), width={"size": 3}, style={'padding': '10px 10px'}),
-                     dbc.Col(html.Div([
-                         html.Label('Housecleaning and home maintenance: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'Dependent', 'value': 0},
-                                 {'label': 'Partly Dependent', 'value': 1},
-                                 {'label': 'Independent', 'value': 2}
-                             ],
-                             value=2,
-                             id='Houseclean'
-                         )
-                     ]), width={"size": 3}, style={'padding': '10px 10px'}),
-                     dbc.Col(html.Div([
-                         html.Label('Managing tasks associated with laundry: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'Dependent', 'value': 0},
-                                 {'label': 'Partly Dependent', 'value': 1},
-                                 {'label': 'Independent', 'value': 2}
-                             ],
-                             value=2,
-                             id='Manage_laundry'
-                         )
-                     ]), width={"size": 3}, style={'padding': '10px 10px'}),
-                 ], style={'padding': '10px 25px'}),
-                 dbc.Row([
-                     dbc.Col(html.Div([
-                         html.Label('Standing Balance: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'Dependent', 'value': 0},
-                                 {'label': 'Partly Dependent', 'value': 1},
-                                 {'label': 'Independent', 'value': 2}
-                             ],
-                             value=2,
-                             id='Stand_Bal1'
-                         )
-                     ]), width={"size": 3}),
-                     dbc.Col(html.Div([
-                         html.Label('Bowel: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'Dependent', 'value': 0},
-                                 {'label': 'Partly Dependent', 'value': 1},
-                                 {'label': 'Independent', 'value': 2}
-                             ],
-                             value=2,
-                             id='Bowel'
-                         )
-                     ]), width={"size": 3}),
-                     dbc.Col(html.Div([
-                         html.Label('Bladder: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'Dependent', 'value': 0},
-                                 {'label': 'Partly Dependent', 'value': 1},
-                                 {'label': 'Independent', 'value': 2}
-                             ],
-                             value=2,
-                             id='Bladder'
-                         )
-                     ]), width={"size": 3}),
-                 ], style={'padding': '10px 25px'}),
-                 dbc.Row([
-                     dbc.Col(html.Div([
-                         html.Label('Meal Preparation: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'Dependent', 'value': 0},
-                                 {'label': 'Partly Dependent', 'value': 1},
-                                 {'label': 'Independent', 'value': 2}
-                             ],
-                             value=2,
-                             id='Meal_Prep'
-                         )
-                     ]), width={"size": 3}),
-                     dbc.Col(html.Div([
-                         html.Label('Managing Finance: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'Dependent', 'value': 0},
-                                 {'label': 'Partly Dependent', 'value': 1},
-                                 {'label': 'Independent', 'value': 2}
-                             ],
-                             value=2,
-                             id='Manage_Finance'
-                         )
-                     ]), width={"size": 3}),
-                     dbc.Col(html.Div([
-                         html.Label('Managing Medications: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'Dependent', 'value': 0},
-                                 {'label': 'Partly Dependent', 'value': 1},
-                                 {'label': 'Independent', 'value': 2}
-                             ],
-                             value=2,
-                             id='Managing_Medications'
-                         )
-                     ]), width={"size": 3}),
-                 ], style={'padding': '10px 25px'}),
-
-                 dbc.Row([html.Div("History of Chronic Diseases",
-                                   style={'font-weight': 'bold', 'font-size': 16, 'padding': '10px 25px'})]),
-                 dbc.Row([
-                     dbc.Col(html.Div([
-                         html.Label('COPD: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'No', 'value': 0},
-                                 {'label': 'Yes', 'value': 1}
-                             ],
-                             value=0,
-                             id='COPD'
-                         )
-                     ]), width={"size": 3}),
-                     dbc.Col(html.Div([
-                         html.Label('Heart Disease: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'No', 'value': 0},
-                                 {'label': 'Yes', 'value': 1}
-                             ],
-                             value=0,
-                             id='Heart_Disease'
-                         )
-                     ]), width={"size": 3}),
-                     dbc.Col(html.Div([
-                         html.Label('Stroke: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'No', 'value': 0},
-                                 {'label': 'Yes', 'value': 1}
-                             ],
-                             value=0,
-                             id='Stroke'
-                         )
-                     ]), width={"size": 3}),
-                 ], style={'padding': '10px 25px'}),
-                 dbc.Row([html.Div("Social Service Utilization",
-                                   style={'font-weight': 'bold', 'font-size': 16, 'padding': '10px 25px'})]),
-                 dbc.Row([
-                     dbc.Col(html.Div([
-                         html.Label('Use of Walking Aid: '),
-                         dcc.Dropdown(
-                             options=[
-                                 {'label': 'No', 'value': 0},
-                                 {'label': 'Yes', 'value': 1}
+                                 {'label': '沒有', 'value': 0},
+                                 {'label': '有', 'value': 1}
                              ],
                              value=0,
                              id='Walking_Aid'
                          )
                      ]), width={"size": 3}),
                      dbc.Col(html.Div([
-                         html.Label('Usage of Social Service: '),
+                         html.Label('使用社區服務: '),
                          dcc.Dropdown(
                              options=[
-                                 {'label': 'No', 'value': 0},
-                                 {'label': 'Yes', 'value': 1}
+                                 {'label': '沒有', 'value': 0},
+                                 {'label': '有', 'value': 1}
                              ],
                              value=0,
                              id='social_service_usage1'
                          )
                      ]), width={"size": 3}),
+                 ], style={'padding': '0px 5px'}),
+
+                 dbc.Row([html.Div("長期病患病史",
+                                   style={'font-weight': 'bold', 'font-size': 16, 'padding': '0px 25px'})]),
+                 dbc.Row([
+                     dbc.Col(html.Div([
+                         html.Label('慢性阻塞性肺病: '),
+                         dcc.Dropdown(
+                             options=[
+                                 {'label': '否', 'value': 0},
+                                 {'label': '是', 'value': 1}
+                             ],
+                             clearable=False,
+                             value=0,
+                             id='COPD'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 10px'}),
+                     dbc.Col(html.Div([
+                         html.Label('心臟病: '),
+                         dcc.Dropdown(
+                             options=[
+                                 {'label': '否', 'value': 0},
+                                 {'label': '是', 'value': 1}
+                             ],
+                             clearable=False,
+                             value=0,
+                             id='Heart_Disease'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 10px'}),
+                     dbc.Col(html.Div([
+                         html.Label('中風: '),
+                         dcc.Dropdown(
+                             options=[
+                                 {'label': '否', 'value': 0},
+                                 {'label': '是', 'value': 1}
+                             ],
+                             clearable=False,
+                             value=0,
+                             id='Stroke'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 10px'}),
+                 ], style={'padding': '10px 25px'}),
+
+                 dbc.Row([html.Div("日常家居及社區活動能力評估",
+                                   style={'font-weight': 'bold', 'font-size': 16, 'padding': '0px 25px'})]),
+                 dbc.Row([
+                     dbc.Col(html.Div([
+                         # html.Label('Uses public transportation as usual: '),
+                         html.Label('自己搭車: '),
+                         dcc.Dropdown(
+                             options=[
+                                 # {'label': 'Dependent', 'value': 0},
+                                 # {'label': 'Partly Dependent', 'value': 1},
+                                 # {'label': 'Independent', 'value': 2}
+                                 {'label': '不需要任何幫助', 'value': 2},
+                                 {'label': '需要一些幫助', 'value': 1},
+                                 {'label': '完全不能自己做', 'value': 0},
+                             ],
+                             # style={'height': '1px', 'width': '1px', 'font-size': "70%"},
+                             clearable=False,
+                             value=2,
+                             id='Use_Transp'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 1px'}),
+                     dbc.Col(html.Div([
+                         # html.Label('Shopping for items required for daily life: '),
+                         html.Label('自己購物: '),
+                         dcc.Dropdown(
+                             options=[
+                                 # {'label': 'Dependent', 'value': 0},
+                                 # {'label': 'Partly Dependent', 'value': 1},
+                                 # {'label': 'Independent', 'value': 2}
+                                 {'label': '不需要任何幫助', 'value': 2},
+                                 {'label': '需要一些幫助', 'value': 1},
+                                 {'label': '完全不能自己做', 'value': 0},
+                             ],
+                             clearable=False,
+                             value=2,
+                             id='Shopping'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 1px'}),
+                     dbc.Col(html.Div([
+                         # html.Label('Housecleaning and home maintenance: '),
+                         html.Label('自己做家務: '),
+                         dcc.Dropdown(
+                             options=[
+                                 # {'label': 'Dependent', 'value': 0},
+                                 # {'label': 'Partly Dependent', 'value': 1},
+                                 # {'label': 'Independent', 'value': 2}
+                                 {'label': '不需要任何幫助', 'value': 2},
+                                 {'label': '需要一些幫助', 'value': 1},
+                                 {'label': '完全不能自己做', 'value': 0},
+                             ],
+                             clearable=False,
+                             value=2,
+                             id='Houseclean'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 1px'}),
+                     dbc.Col(html.Div([
+                         # html.Label('Managing tasks associated with laundry: '),
+                         html.Label('自己洗杉: '),
+                         dcc.Dropdown(
+                             options=[
+                                 # {'label': 'Dependent', 'value': 0},
+                                 # {'label': 'Partly Dependent', 'value': 1},
+                                 # {'label': 'Independent', 'value': 2}
+                                 {'label': '不需要任何幫助', 'value': 2},
+                                 {'label': '需要一些幫助', 'value': 1},
+                                 {'label': '完全不能自己做', 'value': 0},
+                             ],
+                             clearable=False,
+                             value=2,
+                             id='Manage_laundry'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 1px'}),
+                     dbc.Col(html.Div([
+                         # html.Label('Meal Preparation: '),
+                         html.Label('自己煮野食: '),
+                         dcc.Dropdown(
+                             options=[
+                                 # {'label': 'Dependent', 'value': 0},
+                                 # {'label': 'Partly Dependent', 'value': 1},
+                                 # {'label': 'Independent', 'value': 2}
+                                 {'label': '不需要任何幫助', 'value': 2},
+                                 {'label': '需要一些幫助', 'value': 1},
+                                 {'label': '完全不能自己做', 'value': 0},
+                             ],
+                             clearable=False,
+                             value=2,
+                             id='Meal_Prep'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 1px'}),
+                     dbc.Col(html.Div([
+                         html.Label('自己處理財務: '),
+                         dcc.Dropdown(
+                             options=[
+                                 # {'label': 'Dependent', 'value': 0},
+                                 # {'label': 'Partly Dependent', 'value': 1},
+                                 # {'label': 'Independent', 'value': 2}
+                                 {'label': '不需要任何幫助', 'value': 2},
+                                 {'label': '需要一些幫助', 'value': 1},
+                                 {'label': '完全不能自己做', 'value': 0},
+                             ],
+                             clearable=False,
+                             value=2,
+                             id='Manage_Finance'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 1px'}),
+                     dbc.Col(html.Div([
+                         # html.Label('Managing Medications: '),
+                         html.Label('自己食藥: '),
+                         dcc.Dropdown(
+                             options=[
+                                 # {'label': 'Dependent', 'value': 0},
+                                 # {'label': 'Partly Dependent', 'value': 1},
+                                 # {'label': 'Independent', 'value': 2}
+                                 {'label': '不需要任何幫助', 'value': 2},
+                                 {'label': '需要一些幫助', 'value': 1},
+                                 {'label': '完全不能自己做', 'value': 0},
+                             ],
+                             clearable=False,
+                             value=2,
+                             id='Managing_Medications'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 1px'}),
+                     dbc.Col(html.Div([
+                         # html.Label('Bowel: '),
+                         html.Label('大便失禁: '),
+                         dcc.Dropdown(
+                             options=[
+                                 {'label': '失禁 (要用造口袋)', 'value': 0},
+                                 {'label': '偶然失禁', 'value': 1},
+                                 {'label': '自制', 'value': 2}
+                             ],
+                             clearable=False,
+                             value=2,
+                             id='Bowel'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 1px'}),
+                     dbc.Col(html.Div([
+                         # html.Label('Bladder: '),
+                         html.Label('小便失禁: '),
+                         dcc.Dropdown(
+                             options=[
+                                 # {'label': 'Dependent', 'value': 0},
+                                 # {'label': 'Partly Dependent', 'value': 1},
+                                 # {'label': 'Independent', 'value': 2}
+                                 {'label': '失禁 (要用導尿管)', 'value': 0},
+                                 {'label': '偶然失禁', 'value': 1},
+                                 {'label': '自制', 'value': 2}
+                             ],
+                             clearable=False,
+                             value=2,
+                             id='Bladder'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 1px'}),
+                     dbc.Col(html.Div([
+                         # html.Label('Standing Balance: '),
+                         html.Label('站立平衡: '),
+                         dcc.Dropdown(
+                             options=[
+                                 # {'label': 'Dependent', 'value': 0},
+                                 # {'label': 'Partly Dependent', 'value': 1},
+                                 # {'label': 'Independent', 'value': 2}
+                                 {'label': '穩定且不需支撐', 'value': 0},
+                                 {'label': '穩定但需支撐', 'value': 1},
+                                 {'label': '不穩', 'value': 2}
+                             ],
+                             clearable=False,
+                             value=2,
+                             id='Stand_Bal1'
+                         )
+                     ]), width={"size": 4}, style={'padding': '0px 1px'}),
                      dbc.Col([
                          dbc.Card([
                              dbc.CardBody([
                                  dbc.Row([
                                      html.Div("Predicted risk",
-                                              style={'font-weight': 'bold', 'font-size': 24}),
+                                              style={'font-weight': 'bold', 'font-size': 16}),
                                  ]),
                                  dbc.Row([
                                      html.Div(id='main_text',
-                                              style={'font-size': 72,
+                                              style={'font-size': 36,
                                                      'font-weight': 'bold',
                                                      "color": "red",
                                                      }),
                                  ])
                              ]),
-                         ], style={"width": "18rem"},
+                         ], style={"width": "12rem",
+                                   'margin-top': '5px',},
                              className="g-0 d-flex align-items-center")
                      ]),
                  ], style={'padding': '10px 25px'}),
@@ -279,7 +327,7 @@ app.layout = html.Div([
         # Right hand column containing the summary information for predicted heart disease risk
         dbc.Col([
             dbc.Row([html.Div("Factors contributing to predicted likelihood of frequent hospital admissions",
-                              style={'font-weight': 'bold', 'font-size': 16, 'padding': '10px 25px'})]),
+                              style={'font-weight': 'bold', 'font-size': 16, 'padding': '0px 25px'})]),
             dbc.Row([
                 dbc.Col([
                     html.Div([
@@ -289,7 +337,8 @@ app.layout = html.Div([
                     width={"size": 1}),
                 dbc.Col([
                     html.Div(["high risk: increase in frequent hospital admissions likelihood."],
-                             style={'font-size': 16})
+                             style={'font-size': 13,
+                                    'padding': '5px 0px'})
                 ]),
             ]),
             dbc.Row([
@@ -301,7 +350,8 @@ app.layout = html.Div([
                     width={"size": 1}),
                 dbc.Col([
                     html.Div(["low risk: decrease in frequent hospital admissions likelihood."],
-                             style={'font-size': 16})
+                             style={'font-size': 13,
+                                    'padding': '5px 0px'})
                 ]),
             ]),
 
@@ -310,10 +360,10 @@ app.layout = html.Div([
                 config={'displayModeBar': False}
             ), style={'marginLeft': 15}),
             dbc.Row([html.Div(id='action_header',
-                              style={'font-weight': 'bold', 'font-size': 16, 'padding': '10px 25px'})]),
+                              style={'font-weight': 'bold', 'font-size': 13, 'padding': '0px 25px'})]),
             dbc.Row(
                 dbc.Col([html.Div(id='recommended_action')], width={"size": 11},
-                        style={'font-size': 16, 'padding': '10px 25px',
+                        style={'font-size': 15, 'padding': '10px 25px',
                                'backgroundColor': '#E2E2E2', 'marginLeft': 25})),
         ],
             style={'padding': '10px 25px'}
@@ -474,8 +524,8 @@ def predict_hd_summary(data_patient):
         waterfallgap=0.2,
         # showlegend = True,
         autosize=False,
-        width=800,
-        height=400,
+        width=660,
+        height=330,
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         yaxis=dict(
@@ -517,11 +567,11 @@ def predict_hd_summary(data_patient):
         xref='x',
         # x=explainer_patient.expected_value,
         x=explainer_patient.expected_value[1],
-        y=-0.12,
+        y=-0.15,
         # text="E[f(x)] = {:.2f}".format(explainer_patient.expected_value),
         text="E[f(x)] = {:.2f}".format(explainer_patient.expected_value[1]),
         showarrow=False,
-        font=dict(color="black", size=14)
+        font=dict(color="black", size=10)
     )
     fig2.add_annotation(
         yref='paper',
@@ -532,7 +582,7 @@ def predict_hd_summary(data_patient):
         # text="f(x) = {:.2f}".format(plot_data['shap_original'].sum()+explainer_patient.expected_value),
         text="f(x) = {:.2f}".format(plot_data['shap_original'].sum() + explainer_patient.expected_value[1]),
         showarrow=False,
-        font=dict(color="black", size=14)
+        font=dict(color="black", size=10)
     )
 
     return text_val, \

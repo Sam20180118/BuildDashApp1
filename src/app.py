@@ -52,7 +52,7 @@ app.layout = html.Div([
                              debounce=True,
                              value=65,
                              id='age',
-                             size = '8'
+                             size = '6'
                          )
                      ]), width={"size": 3}),
                      dbc.Col(html.Div([

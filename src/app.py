@@ -40,21 +40,29 @@ app.layout = html.Div([
                     'backgroundColor': '#24a0ed',
                     'padding': '2px 5px'}),
     dbc.Row([
-        dbc.Col([html.Div("Personal health information",
+        dbc.Col([
+            dbc.Row([dbc.Col([html.Div("請輸入以下資料: ",
                           style={'font-weight': 'bold', 'font-size': 16}),
-                 # dbc.Row([html.Div("Individual demographics",
-                 #                   style={'font-weight': 'bold', 'font-size': 14, 'padding': '10px 25px'})]),
-                 dbc.Row([
+                              ], className="g-0", width={"size": 5}),
                      dbc.Col(html.Div([
-                         html.Label('年齡: '),
+                         html.Label('年齡(歲): '),
+                     ]), className="g-0",
+                         width={"size": 3}),
+                     dbc.Col(html.Div([
                          dcc.Input(
                              type="number",
                              debounce=True,
                              value=65,
                              id='age',
-                             size = '8'
+                             size='8',
+                             # style={'marginRight': '10px'}
                          )
-                     ])),
+                     ]), width={"size": 3}),
+
+                     ]),
+                 # dbc.Row([
+                 # ]),
+                 dbc.Row([
                      dbc.Col(html.Div([
                          html.Label('性別: '),
                          dcc.Dropdown(
@@ -80,7 +88,7 @@ app.layout = html.Div([
                          )
                      ]), width={"size": 3}),
                      dbc.Col(html.Div([
-                         html.Label('使用社區服務: '),
+                         html.Label('正接受社區服務: '),
                          dcc.Dropdown(
                              options=[
                                  {'label': '沒有', 'value': 0},
@@ -90,8 +98,8 @@ app.layout = html.Div([
                              value=0,
                              id='social_service_usage1'
                          )
-                     ]), width={"size": 3}),
-                 ], style={'padding': '0px 5px'}),
+                     ]), width={"size": 4}),
+                 ], style={'padding': '0px 25px'}),
 
                  dbc.Row([html.Div("長期病患病史",
                                    style={'font-weight': 'bold', 'font-size': 16, 'padding': '0px 25px'})]),
@@ -191,7 +199,7 @@ app.layout = html.Div([
                      ]), width={"size": 4}, style={'padding': '0px 1px'}),
                      dbc.Col(html.Div([
                          # html.Label('Managing tasks associated with laundry: '),
-                         html.Label('自己洗杉: '),
+                         html.Label('自己洗衫: '),
                          dcc.Dropdown(
                              options=[
                                  # {'label': 'Dependent', 'value': 0},
@@ -208,7 +216,7 @@ app.layout = html.Div([
                      ]), width={"size": 4}, style={'padding': '0px 1px'}),
                      dbc.Col(html.Div([
                          # html.Label('Meal Preparation: '),
-                         html.Label('自己煮野食: '),
+                         html.Label('自己煮食: '),
                          dcc.Dropdown(
                              options=[
                                  # {'label': 'Dependent', 'value': 0},
@@ -306,22 +314,31 @@ app.layout = html.Div([
                      ]), width={"size": 4}, style={'padding': '0px 1px'}),
                      dbc.Col([
                          dbc.Card([
-                             dbc.CardBody([
+                             dbc.CardHeader([
                                  dbc.Row([
                                      html.Div("Predicted risk",
-                                              style={'font-weight': 'bold', 'font-size': 16}),
+                                              style={'font-weight': 'bold',
+                                                     'font-size': 16,
+                                                     # "color": "red",
+                                                     }),
                                  ]),
+                             ]),
+                             dbc.CardBody([
                                  dbc.Row([
                                      html.Div(id='main_text',
                                               style={'font-size': 36,
                                                      'font-weight': 'bold',
-                                                     "color": "red",
+                                                     # "color": "red",
                                                      }),
                                  ])
                              ]),
                          ], style={"width": "12rem",
-                                   'margin-top': '5px',},
-                             className="g-0 d-flex align-items-center")
+                                   'height':'18vh',
+                                   'margin-top': '0px',
+                                   },
+                             className="g-0 d-flex align-items-center",
+                             color="danger", inverse=True,
+                         )
                      ]),
                  ], style={'padding': '10px 25px'}),
                  ], style={'padding': '10px 25px'}

@@ -52,7 +52,7 @@ app.layout = html.Div([
                              debounce=True,
                              value=65,
                              id='age',
-                             size = '6'
+                             size = '8'
                          )
                      ]), width={"size": 3}),
                      dbc.Col(html.Div([
@@ -62,6 +62,7 @@ app.layout = html.Div([
                                  {'label': '女', 'value': 0},
                                  {'label': '男', 'value': 1}
                              ],
+                             clearable=False,
                              value=0,
                              id='sex'
                          )
@@ -73,6 +74,7 @@ app.layout = html.Div([
                                  {'label': '沒有', 'value': 0},
                                  {'label': '有', 'value': 1}
                              ],
+                             clearable=False,
                              value=0,
                              id='Walking_Aid'
                          )
@@ -84,6 +86,7 @@ app.layout = html.Div([
                                  {'label': '沒有', 'value': 0},
                                  {'label': '有', 'value': 1}
                              ],
+                             clearable=False,
                              value=0,
                              id='social_service_usage1'
                          )

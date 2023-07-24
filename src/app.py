@@ -42,12 +42,13 @@ app.layout = html.Div([
     dbc.Row([
         dbc.Col([
             dbc.Row([dbc.Col([html.Div("請輸入以下資料: ",
-                          style={'font-weight': 'bold', 'font-size': 16}),
-                              ], className="g-0", width={"size": 5}),
+                          style={'font-weight': 'bold', 'font-size': 16,
+                                 'padding': '0px 10px'}),
+                              ], className="g-0", width={"size": 4}),
                      dbc.Col(html.Div([
                          html.Label('年齡(歲): '),
-                     ]), className="g-0",
-                         width={"size": 3}),
+                     ], style = {'padding': '0px 10px'}), className="g-0",
+                         width={"size": 2}),
                      dbc.Col(html.Div([
                          dcc.Input(
                              type="number",
@@ -324,17 +325,20 @@ app.layout = html.Div([
                                  ]),
                              ]),
                              dbc.CardBody([
-                                 dbc.Row([
-                                     html.Div(id='main_text',
-                                              style={'font-size': 36,
-                                                     'font-weight': 'bold',
-                                                     # "color": "red",
+                                 # dbc.Row([
+                                 #     html.Div(id='main_text',
+                                 #              style={'font-size': 36,
+                                 #                     'font-weight': 'bold',
+                                 #                     # "color": "red",
+                                 #                     }),
+                                 # ])
+                                 html.H2(id='main_text',
+                                              style={'font-weight': 'bold',
                                                      }),
-                                 ])
                              ]),
                          ], style={"width": "12rem",
-                                   'height':'18vh',
-                                   'margin-top': '0px',
+                                   'height':'17vh',
+                                   'margin-top': '5px',
                                    },
                              className="g-0 d-flex align-items-center",
                              color="danger", inverse=True,

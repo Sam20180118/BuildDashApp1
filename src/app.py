@@ -54,7 +54,7 @@ app.layout = html.Div([
                              id='age',
                              size = '8'
                          )
-                     ]), width={"size": 3}),
+                     ])),
                      dbc.Col(html.Div([
                          html.Label('性別: '),
                          dcc.Dropdown(

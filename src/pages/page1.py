@@ -304,9 +304,9 @@ layout = html.Div([
                                  # {'label': 'Dependent', 'value': 0},
                                  # {'label': 'Partly Dependent', 'value': 1},
                                  # {'label': 'Independent', 'value': 2}
-                                 {'label': '穩定且不需支撐', 'value': 0},
+                                 {'label': '不穩', 'value': 0},
                                  {'label': '穩定但需支撐', 'value': 1},
-                                 {'label': '不穩', 'value': 2}
+                                 {'label': '穩定且不需支撐', 'value': 2}
                              ],
                              clearable=False,
                              value=2,

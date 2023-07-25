@@ -41,7 +41,7 @@ def display_page(pathname):
         return page2.layout
     else:
         # return "404 Page Error! Please choose a link"
-        return "please select a page"
+        return page1.layout
 
 # Run the app on localhost:8050
 if __name__ == '__main__':

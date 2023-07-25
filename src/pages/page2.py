@@ -87,7 +87,7 @@ layout = html.Div([
                 dbc.Col([
                     html.Div(['Decision Direction'],
                              style={
-                                 'font-size': 16,
+                                 'font-size': 18,
                                 # 'font-weight': 'bold',
                                  # 'margin-right': '2px',
                                  # 'margin-left': '2px',
@@ -184,7 +184,7 @@ layout = html.Div([
             ]),
             dbc.Row([html.Div(['Decision variable (scroll down to see description)'],
                               style={
-                                  'font-size': 16,
+                                  'font-size': 20,
                               }),
                      html.Div(['Selected risk condition of',
                                html.Br(),
@@ -199,7 +199,7 @@ layout = html.Div([
                                ' 100%: 100% of individuals in the dependent group improve ',
                                ],
                               style={
-                                  'font-size': 10,
+                                  'font-size': 12,
                               }),
                      ])
         ]),
